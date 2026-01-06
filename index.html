@@ -316,8 +316,8 @@
 
     <!-- Update Notification -->
     <div id="updateBanner" class="update-banner">
-        <span>A new version is available!</span>
-        <button id="updateBtn" class="btn btn-primary btn-sm">Refresh</button>
+        <span id="updateStatus">App Version: v1.0.5</span>
+        <button id="updateBtn" class="btn btn-primary btn-sm">Check for Updates</button>
     </div>
 
     <script src="app.js"></script>
@@ -329,13 +329,39 @@
                     .then((registration) => {
                         console.log('SW registered:', registration.scope);
 
+                        // Handle manual update check
+                        const btn = document.getElementById('updateBtn');
+                        const status = document.getElementById('updateStatus');
+
+                        btn.addEventListener('click', () => {
+                            btn.textContent = 'Checking...';
+                            btn.disabled = true;
+
+                            registration.update().then(() => {
+                                // If no update found after a short delay, reset button (or let updatefound handle it)
+                                setTimeout(() => {
+                                    if (btn.textContent === 'Checking...') {
+                                        // Force reload to be safe if user wants to refresh
+                                        window.location.reload();
+                                    }
+                                }, 1500);
+                            });
+                        });
+
                         // Check for updates
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;
                             newWorker.addEventListener('statechange', () => {
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                                     // New version available!
-                                    showUpdateBanner(registration);
+                                    status.textContent = 'New version available!';
+                                    btn.textContent = 'Update Now';
+                                    btn.disabled = false;
+
+                                    // Update click handler to skip waiting
+                                    btn.onclick = () => {
+                                        newWorker.postMessage('SKIP_WAITING');
+                                    };
                                 }
                             });
                         });
@@ -351,19 +377,6 @@
                 if (!refreshing) {
                     window.location.reload();
                     refreshing = true;
-                }
-            });
-        }
-
-        function showUpdateBanner(registration) {
-            const banner = document.getElementById('updateBanner');
-            const btn = document.getElementById('updateBtn');
-
-            banner.classList.add('visible');
-            btn.addEventListener('click', () => {
-                const waitingWorker = registration.waiting;
-                if (waitingWorker) {
-                    waitingWorker.postMessage('SKIP_WAITING');
                 }
             });
         }
