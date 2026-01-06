@@ -104,6 +104,25 @@ function getDaysRemaining(targetDate) {
     return Math.max(0, diffDays);
 }
 
+function getSmartTime(days) {
+    if (days <= 0) return '0 days';
+    if (days < 30) return `${days} day${days !== 1 ? 's' : ''}`;
+
+    if (days < 365) {
+        const months = Math.floor(days / 30.44);
+        const remainingDays = Math.round(days % 30.44);
+        if (remainingDays === 0) return `${months} mon${months !== 1 ? 's' : ''}`;
+        return `${months}m ${remainingDays}d`;
+    }
+
+    const years = Math.floor(days / 365.25);
+    const months = Math.round((days % 365.25) / 30.44);
+
+    if (months === 0) return `${years}y`;
+    if (months === 12) return `${years + 1}y`;
+    return `${years}y ${months}m`;
+}
+
 // Calculate current amount from contributions
 function getCurrentAmount(fund) {
     if (!fund.contributions || fund.contributions.length === 0) {
@@ -429,8 +448,8 @@ function renderFundCard(fund) {
                     <span class="fund-detail-value ${statusClass}">${formatCurrency(monthlyContribution)}</span>
                 </div>
                 <div class="fund-detail">
-                    <span class="fund-detail-label">Days Left</span>
-                    <span class="fund-detail-value ${statusClass}">${daysRemaining}</span>
+                    <span class="fund-detail-label">Time Left</span>
+                    <span class="fund-detail-value ${statusClass}" title="${daysRemaining} days left">${getSmartTime(daysRemaining)}</span>
                 </div>
                 <div class="fund-detail">
                     <span class="fund-detail-label">Target Date</span>

@@ -1,4 +1,4 @@
-# 💰 Sinking Fund Tracker
+# 💰 Sinking Fund Tracker [![deployment](https://github.com/vgviscayno/Sinking-Fund-Tracker-PWA/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/vgviscayno/Sinking-Fund-Tracker-PWA/actions/workflows/pages/pages-build-deployment)
 
 A modern, offline-first Progressive Web App (PWA) to help you track and manage your sinking funds for future expenses.
 
