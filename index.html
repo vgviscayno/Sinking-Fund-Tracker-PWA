@@ -72,6 +72,28 @@
                 </div>
             </div>
 
+            <!-- Controls Bar -->
+            <div class="controls-bar">
+                <div class="control-group">
+                    <label for="sortBy">Sort by</label>
+                    <div class="select-wrapper">
+                        <select id="sortBy">
+                            <option value="name-asc">Name (A-Z)</option>
+                            <option value="name-desc">Name (Z-A)</option>
+                            <option value="date-asc">Date (Soonest)</option>
+                            <option value="date-desc">Date (Furthest)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group toggle-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="showCompleted">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Show Completed</span>
+                </div>
+            </div>
+
             <!-- Add Fund Button -->
             <button class="add-fund-btn" id="addFundBtn">
                 <span class="add-icon">+</span>

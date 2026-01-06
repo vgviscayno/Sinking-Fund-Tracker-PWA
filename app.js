@@ -7,6 +7,8 @@ let deletingFundId = null;
 let depositingFundId = null;
 let editingDepositId = null;
 let viewingHistoryFundId = null;
+let currentSort = localStorage.getItem('sinkingFunds_sort') || 'name-asc';
+let showCompleted = localStorage.getItem('sinkingFunds_showCompleted') === 'true';
 
 // ===== DOM Elements =====
 const elements = {
@@ -62,6 +64,9 @@ const elements = {
     importBtn: document.getElementById('importBtn'),
     helpBtn: document.getElementById('helpBtn'),
     importFile: document.getElementById('importFile'),
+    // Filtering/Sorting
+    sortBy: document.getElementById('sortBy'),
+    showCompleted: document.getElementById('showCompleted'),
     // Help modal
     helpModal: document.getElementById('helpModal'),
     helpModalOverlay: document.getElementById('helpModalOverlay'),
@@ -408,9 +413,30 @@ function renderFunds() {
         elements.addFundBtn.style.display = 'inline-flex';
     }
 
+    // Filter and Sort Funds
+    let displayFunds = funds.filter(fund => {
+        if (showCompleted) return true;
+        const progress = calculateProgress(fund);
+        return progress < 100;
+    });
+
+    displayFunds.sort((a, b) => {
+        switch (currentSort) {
+            case 'name-asc':
+                return a.name.localeCompare(b.name);
+            case 'name-desc':
+                return b.name.localeCompare(a.name);
+            case 'date-asc':
+                return new Date(a.targetDate) - new Date(b.targetDate);
+            case 'date-desc':
+                return new Date(b.targetDate) - new Date(a.targetDate);
+            default: // Default to name-asc
+                return a.name.localeCompare(b.name);
+        }
+    });
+
     // Render fund cards
-    elements.fundsGrid.innerHTML = funds
-        .sort((a, b) => a.name.localeCompare(b.name))
+    elements.fundsGrid.innerHTML = displayFunds
         .map(fund => renderFundCard(fund))
         .join('');
 
@@ -764,6 +790,23 @@ function init() {
     elements.exportBtn.addEventListener('click', exportData);
     elements.importBtn.addEventListener('click', handleImportClick);
     elements.importFile.addEventListener('change', handleFileImport);
+
+    // Initialize controls
+    if (elements.sortBy) elements.sortBy.value = currentSort;
+    if (elements.showCompleted) elements.showCompleted.checked = showCompleted;
+
+    // Sorting and Filtering events
+    elements.sortBy.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        localStorage.setItem('sinkingFunds_sort', currentSort);
+        renderFunds();
+    });
+
+    elements.showCompleted.addEventListener('change', (e) => {
+        showCompleted = e.target.checked;
+        localStorage.setItem('sinkingFunds_showCompleted', showCompleted);
+        renderFunds();
+    });
 
     // Hide help button if running as PWA (standalone)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
