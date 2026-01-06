@@ -895,3 +895,51 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--bg-card-hover);
 }
+
+/* ===== Help Modal ===== */
+.help-section {
+    padding: var(--spacing-sm) 0;
+}
+
+.help-section h3 {
+    font-size: var(--font-size-md);
+    margin-bottom: var(--spacing-sm);
+    color: var(--accent-primary);
+}
+
+.help-list {
+    padding-left: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+}
+
+.help-list li {
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-secondary);
+}
+
+.help-icon {
+    font-size: 1.25em;
+    vertical-align: middle;
+}
+
+.help-note {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    font-style: italic;
+    background: rgba(99, 102, 241, 0.1);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    border-left: 3px solid var(--accent-primary);
+}
+
+.help-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: var(--spacing-md) 0;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--spacing-md);
+}

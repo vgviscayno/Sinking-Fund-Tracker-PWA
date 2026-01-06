@@ -37,6 +37,10 @@
                         <span>📥</span>
                         <span class="btn-text">Import</span>
                     </button>
+                    <button id="helpBtn" class="btn-icon" title="Installation Guide">
+                        <span>❓</span>
+                        <span class="btn-text">Help</span>
+                    </button>
                     <input type="file" id="importFile" accept=".json" style="display: none;">
                 </div>
                 <div class="total-savings">
@@ -238,6 +242,52 @@
             </div>
             <div class="form-actions">
                 <button type="button" class="btn btn-secondary" id="closeHistoryBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help / Installation Modal -->
+    <div class="modal-overlay" id="helpModalOverlay">
+        <div id="helpModal" class="modal">
+            <div class="modal-header">
+                <h2>Installation Guide</h2>
+                <button class="modal-close" id="helpModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-section">
+                    <h3>iPhone & iPad (iOS)</h3>
+                    <ol class="help-list">
+                        <li>Open the site in <strong>Safari</strong> or <strong>Brave</strong>.</li>
+                        <li>Tap the <strong>Share</strong> button <span class="help-icon">⎋</span> (square with up
+                            arrow).</li>
+                        <li>Scroll down and tap <strong>Add to Home Screen ⊞</strong>.</li>
+                    </ol>
+                    <p class="help-note">Note: If you are in an "In-App Browser", tap "Open in Browser" first.</p>
+                </div>
+
+                <hr class="help-divider">
+
+                <div class="help-section">
+                    <h3>Android</h3>
+                    <ol class="help-list">
+                        <li>Open the site in <strong>Chrome</strong>.</li>
+                        <li>Tap the <strong>Menu</strong> icon <strong>⋮</strong> (three dots).</li>
+                        <li>Tap <strong>Install App</strong> or <strong>Add to Home Screen</strong>.</li>
+                    </ol>
+                </div>
+
+                <hr class="help-divider">
+
+                <div class="help-section">
+                    <h3>Desktop</h3>
+                    <ol class="help-list">
+                        <li>Open the site in <strong>Chrome</strong> or <strong>Edge</strong>.</li>
+                        <li>Click the <strong>Install</strong> icon ⊕ in the address bar.</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="closeHelpBtn">Got it!</button>
             </div>
         </div>
     </div>

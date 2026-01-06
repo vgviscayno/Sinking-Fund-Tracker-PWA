@@ -25,6 +25,20 @@ A modern, offline-first Progressive Web App (PWA) to help you track and manage y
    ```
 3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## 📱 Installation Guide (PWA)
+
+To get the full app experience on your phone:
+
+### iOS (iPhone/iPad)
+1. Open the site in **Brave**, **Safari**, or **Chrome**.
+2. Tap the **Share** button (square with up arrow).
+3. Scroll down and tap **"Add to Home Screen"**.
+
+### Android
+1. Open the site in **Chrome**.
+2. Tap the **Three Dots (⋮)** menu.
+3. Tap **"Install App"** or **"Add to Home Screen"**.
+
 ## 📱 PWA & Offline Support
 
 This app uses a Service Worker (`sw.js`) to cache assets for offline use.

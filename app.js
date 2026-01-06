@@ -57,10 +57,16 @@ const elements = {
     historyList: document.getElementById('historyList'),
     historyEmpty: document.getElementById('historyEmpty'),
     closeHistoryBtn: document.getElementById('closeHistoryBtn'),
-    // Export/Import
+    // Export/Import/Help
     exportBtn: document.getElementById('exportBtn'),
     importBtn: document.getElementById('importBtn'),
+    helpBtn: document.getElementById('helpBtn'),
     importFile: document.getElementById('importFile'),
+    // Help modal
+    helpModal: document.getElementById('helpModal'),
+    helpModalOverlay: document.getElementById('helpModalOverlay'),
+    helpModalClose: document.getElementById('helpModalClose'),
+    closeHelpBtn: document.getElementById('closeHelpBtn'),
 };
 
 // ===== Utility Functions =====
@@ -232,28 +238,43 @@ function handleFileImport(e) {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Show loading state or feedback
+    console.log(`Attempting to import: ${file.name}`);
+
     const reader = new FileReader();
+
     reader.onload = (event) => {
         try {
-            const importedFunds = JSON.parse(event.target.result);
-            if (Array.isArray(importedFunds)) {
-                if (confirm('Import data? This will REPLACE all current data on this device.')) {
-                    funds = importedFunds;
-                    // Run migration just in case it's an old format
-                    migrateFunds();
-                    saveFunds();
-                    renderFunds();
-                    alert('Data imported successfully!');
-                }
-            } else {
-                alert('Invalid file format.');
+            const result = event.target.result;
+            if (!result) throw new Error('File is empty');
+
+            const importedFunds = JSON.parse(result);
+
+            if (!Array.isArray(importedFunds)) {
+                throw new Error('Invalid data format: Expected an array of funds.');
+            }
+
+            if (confirm(`Import ${importedFunds.length} funds? This will REPLACE all current data on this device.`)) {
+                funds = importedFunds;
+                migrateFunds();
+                saveFunds();
+                renderFunds();
+                alert('Data imported successfully!');
             }
         } catch (error) {
             console.error('Import failed:', error);
-            alert('Failed to import data. File might be corrupted.');
+            alert(`Import failed: ${error.message || 'The file might be corrupted or in the wrong format.'}`);
+        } finally {
+            // Always clear the input so the user can select the same file again
+            e.target.value = '';
         }
-        elements.importFile.value = '';
     };
+
+    reader.onerror = () => {
+        alert('Error reading file. Please try again.');
+        e.target.value = '';
+    };
+
     reader.readAsText(file);
 }
 
@@ -620,6 +641,14 @@ function closeHistoryModal() {
     viewingHistoryFundId = null;
 }
 
+function openHelpModal() {
+    elements.helpModalOverlay.classList.add('visible');
+}
+
+function closeHelpModal() {
+    elements.helpModalOverlay.classList.remove('visible');
+}
+
 // ===== Event Handlers =====
 function handleFormSubmit(e) {
     e.preventDefault();
@@ -698,6 +727,11 @@ function init() {
     elements.historyModalClose.addEventListener('click', closeHistoryModal);
     elements.closeHistoryBtn.addEventListener('click', closeHistoryModal);
 
+    // Help modal events
+    elements.helpBtn.addEventListener('click', openHelpModal);
+    elements.helpModalClose.addEventListener('click', closeHelpModal);
+    elements.closeHelpBtn.addEventListener('click', closeHelpModal);
+
     // Close modals on overlay click
     elements.modalOverlay.addEventListener('click', (e) => {
         if (e.target === elements.modalOverlay) closeModal();
@@ -711,6 +745,9 @@ function init() {
     elements.historyModalOverlay.addEventListener('click', (e) => {
         if (e.target === elements.historyModalOverlay) closeHistoryModal();
     });
+    elements.helpModalOverlay.addEventListener('click', (e) => {
+        if (e.target === elements.helpModalOverlay) closeHelpModal();
+    });
 
     // Close modals on Escape key
     document.addEventListener('keydown', (e) => {
@@ -719,6 +756,7 @@ function init() {
             closeDeleteModal();
             closeDepositModal();
             closeHistoryModal();
+            closeHelpModal();
         }
     });
 
