@@ -410,7 +410,7 @@ function renderFunds() {
 
     // Render fund cards
     elements.fundsGrid.innerHTML = funds
-        .sort((a, b) => new Date(a.targetDate) - new Date(b.targetDate))
+        .sort((a, b) => a.name.localeCompare(b.name))
         .map(fund => renderFundCard(fund))
         .join('');
 
@@ -764,6 +764,12 @@ function init() {
     elements.exportBtn.addEventListener('click', exportData);
     elements.importBtn.addEventListener('click', handleImportClick);
     elements.importFile.addEventListener('change', handleFileImport);
+
+    // Hide help button if running as PWA (standalone)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isStandalone && elements.helpBtn) {
+        elements.helpBtn.style.display = 'none';
+    }
 }
 
 // Make functions available globally for inline handlers

@@ -585,6 +585,7 @@ body {
 
 .input-with-prefix {
     position: relative;
+    width: 100%;
 }
 
 .input-prefix {
