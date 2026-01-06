@@ -41,12 +41,13 @@ To see changes immediately without touching any version numbers:
 #### For Deployed/Production Version
 When you want to push an update to your users:
 1.  **Modify the code** (`app.js`, `index.html`, etc.).
-2.  **Bump the version** in `sw.js`:
+2.  **Change the CACHE_NAME** in `sw.js`:
     ```javascript
-    const CACHE_NAME = 'sinking-funds-v2'; // Increment this number
+    const CACHE_NAME = 'sinking-funds-v1.0.1'; // Any unique string works!
     ```
-3.  The next time the app is opened, a **"New version available!"** banner will appear for the user.
-4.  They click **Refresh** to apply the changes instantly.
+    - *Tip: You can use v2, v1.1.0, or even a timestamp like '2024-01-06-1800'.*
+3.  The next time the app is opened, a **"New version available!"** banner will appear.
+4.  Click **Refresh** to apply the changes instantly.
 
 ### 🔍 Checking the Active Version
 You can verify which version is currently running in your browser:
