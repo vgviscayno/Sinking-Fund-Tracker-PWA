@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinking Fund Tracker</title>
+    <meta name="description" content="Track and manage your sinking funds to plan for future expenses">
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sinking Funds">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">💰</span>
+                    Sinking Funds oten dako
+                </h1>
+                <div class="header-actions">
+                    <button id="exportBtn" class="btn-icon" title="Export Data">
+                        <span>📤</span>
+                        <span class="btn-text">Export</span>
+                    </button>
+                    <button id="importBtn" class="btn-icon" title="Import Data">
+                        <span>📥</span>
+                        <span class="btn-text">Import</span>
+                    </button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+                <div class="total-savings">
+                    <span class="total-label">Total Saved</span>
+                    <span class="total-amount" id="totalSaved">$0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat">
+                    <span class="stat-value" id="fundCount">0</span>
+                    <span class="stat-label">Total Funds</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="inProgressCount">0</span>
+                    <span class="stat-label">In Progress</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="completedCount">0</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="monthlyTotal">₱0</span>
+                    <span class="stat-label">Monthly Goal</span>
+                </div>
+            </div>
+
+            <!-- Add Fund Button -->
+            <button class="add-fund-btn" id="addFundBtn">
+                <span class="add-icon">+</span>
+                Add Sinking Fund
+            </button>
+
+            <!-- Funds Grid -->
+            <div class="funds-grid" id="fundsGrid">
+                <!-- Fund cards will be inserted here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">🎯</div>
+                <h2>No sinking funds yet</h2>
+                <p>Start planning for your future expenses by creating your first sinking fund.</p>
+                <button class="add-fund-btn" id="emptyAddBtn">
+                    <span class="add-icon">+</span>
+                    Create Your First Fund
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Sinking Fund</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <form class="modal-form" id="fundForm">
+                <input type="hidden" id="fundId">
+
+                <div class="form-group">
+                    <label for="fundName">Fund Name</label>
+                    <input type="text" id="fundName" placeholder="e.g., Car Insurance" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetAmount">Target Amount</label>
+                    <div class="input-with-prefix">
+                        <span class="input-prefix">₱</span>
+                        <input type="number" id="targetAmount" placeholder="1,200" min="1" step="0.01" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetDate">Target Date</label>
+                    <input type="date" id="targetDate" required>
+                </div>
+
+                <div class="form-group" id="initialDepositGroup">
+                    <label for="initialDeposit">Initial Deposit (optional)</label>
+                    <div class="input-with-prefix">
+                        <span class="input-prefix">₱</span>
+                        <input type="number" id="initialDeposit" placeholder="0" min="0" step="0.01" value="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fundColor">Color</label>
+                    <div class="color-picker">
+                        <label class="color-option">
+                            <input type="radio" name="fundColor" value="#6366f1" checked>
+                            <span class="color-swatch" style="background: #6366f1"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="fundColor" value="#8b5cf6">
+                            <span class="color-swatch" style="background: #8b5cf6"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="fundColor" value="#ec4899">
+                            <span class="color-swatch" style="background: #ec4899"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="fundColor" value="#10b981">
+                            <span class="color-swatch" style="background: #10b981"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="fundColor" value="#f59e0b">
+                            <span class="color-swatch" style="background: #f59e0b"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="fundColor" value="#06b6d4">
+                            <span class="color-swatch" style="background: #06b6d4"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Add Fund</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModalOverlay">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2>Delete Fund?</h2>
+                <button class="modal-close" id="deleteModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete "<span id="deleteFundName"></span>"? This action cannot be undone.
+                </p>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div class="modal-overlay" id="depositModalOverlay">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2 id="depositModalTitle">Add Deposit</h2>
+                <button class="modal-close" id="depositModalClose">&times;</button>
+            </div>
+            <form class="modal-form" id="depositForm">
+                <input type="hidden" id="depositFundId">
+                <input type="hidden" id="depositId">
+
+                <div class="form-group">
+                    <label for="depositAmount">Amount</label>
+                    <div class="input-with-prefix">
+                        <span class="input-prefix">₱</span>
+                        <input type="number" id="depositAmount" placeholder="500" min="0.01" step="0.01" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="depositDate">Date</label>
+                    <input type="date" id="depositDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="depositNote">Note (optional)</label>
+                    <input type="text" id="depositNote" placeholder="e.g., January savings">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelDepositBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitDepositBtn">Add Deposit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contribution History Modal -->
+    <div class="modal-overlay" id="historyModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="historyModalTitle">Contribution History</h2>
+                <button class="modal-close" id="historyModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="history-list" id="historyList">
+                    <!-- Contributions will be inserted here -->
+                </div>
+                <div class="history-empty" id="historyEmpty">
+                    <p>No contributions yet. Add your first deposit!</p>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="closeHistoryBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Notification -->
+    <div id="updateBanner" class="update-banner">
+        <span>A new version is available!</span>
+        <button id="updateBtn" class="btn btn-primary btn-sm">Refresh</button>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then((registration) => {
+                        console.log('SW registered:', registration.scope);
+
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New version available!
+                                    showUpdateBanner(registration);
+                                }
+                            });
+                        });
+                    })
+                    .catch((error) => {
+                        console.log('SW registration failed:', error);
+                    });
+            });
+
+            // Handle manual refresh
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    window.location.reload();
+                    refreshing = true;
+                }
+            });
+        }
+
+        function showUpdateBanner(registration) {
+            const banner = document.getElementById('updateBanner');
+            const btn = document.getElementById('updateBtn');
+
+            banner.classList.add('visible');
+            btn.addEventListener('click', () => {
+                const waitingWorker = registration.waiting;
+                if (waitingWorker) {
+                    waitingWorker.postMessage('SKIP_WAITING');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
